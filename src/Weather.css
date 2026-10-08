@@ -1,0 +1,42 @@
+.Weather {
+  border: 1px solid #723d69;
+  padding: 1rem;
+}
+input {
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+.form-control {
+  border: 1px solid #3b393b;
+  border-radius: 5px;
+  padding: 10px;
+}
+.btn {
+  border-radius: 5px;
+  padding: 10px 10px;
+}
+
+.display-4 {
+  font-size: 5rem;
+  font-weight: 500;
+}
+
+.icon {
+  height: 7em;
+  width: 7em;
+  object-fit: contain;
+  transform: translateY(0.5em);
+}
+.weather-details {
+  font-weight: bold;
+  color: #e968d3;
+}
+
+.unit {
+  font-size: 1.5rem;
+  position: relative;
+  line-height: 24px;
+  top: -1.5em;
+  display: inline-block;
+  padding-left: 1px;
+}
