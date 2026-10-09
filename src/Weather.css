@@ -14,6 +14,7 @@ input {
 .btn {
   border-radius: 5px;
   padding: 10px 10px;
+  margin-left: 10px;
 }
 
 .display-4 {
@@ -22,8 +23,8 @@ input {
 }
 
 .icon {
-  height: 7em;
-  width: 7em;
+  height: 10em;
+  width: 10em;
   object-fit: contain;
   transform: translateY(0.5em);
 }
@@ -36,7 +37,7 @@ input {
   font-size: 1.5rem;
   position: relative;
   line-height: 24px;
-  top: -1.5em;
+  top: -1.6em;
   display: inline-block;
-  padding-left: 1px;
+  padding-left: 6px;
 }
