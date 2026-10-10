@@ -1,4 +1,3 @@
-import Weather from "./Weather";
 import WeatherTemperature from "./WeatherTemperature";
 
 export default function WeatherInfo(props) {
