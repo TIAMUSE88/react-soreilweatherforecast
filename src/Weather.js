@@ -1,17 +1,18 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./Weather.css";
+import WeatherInfo from "./WeatherInfo";
 
 export default function Weather(props) {
   const [weatherData, setWeatherData] = useState({ ready: false });
-  function handleResponse(response) {
-    console.log(response.data);
+  const [city, setCity] = useState(props.defaultCity);
 
+  function handleResponse(response) {
     setWeatherData({
       ready: true,
       city: response.data.city,
       time: response.data.time,
-      date: new Date(response.data.time * 1000).toLocaleDateString("en-US", {
+      date: new Date(response.data.time * 1000).toLocaleDateString("en-UK", {
         weekday: "long",
       }),
       temperature: response.data.temperature.current,
@@ -24,17 +25,34 @@ export default function Weather(props) {
     });
   }
 
+  function handleSubmit(event) {
+    event.preventDefault();
+    search();
+  }
+
+  function handleCityChange(event) {
+    setCity(event.target.value);
+  }
+
+  function search() {
+    const apiKey = "9387af763ce4b20bcfo1t37b0bacd41e";
+    let apiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}&units=metric`;
+    axios.get(apiUrl).then(handleResponse);
+  }
+
   if (weatherData.ready) {
     return (
       <div className="Weather">
         <div className="container">
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="row g-2 align-items-center">
               <div className="col-8 col-md-9">
                 <input
                   type="search"
                   placeholder="Enter a city..."
                   className="form-control"
+                  autoFocus="on"
+                  onChange={handleCityChange}
                 />
               </div>
               <div className="col-4 col-md-3">
@@ -46,59 +64,12 @@ export default function Weather(props) {
               </div>
             </div>
           </form>
-
-          <div className="row">
-            <div className="col-12">
-              <h1>Miami</h1>
-              <p>
-                {weatherData.date} <span className="weather-details">•</span>{" "}
-                {new Date(weatherData.time * 1000).toLocaleTimeString("en-US", {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </p>
-              <div className="row align-items-center">
-                <div className="col-6">
-                  <h1 className="display-4 my-3">
-                    {Math.round(weatherData.temperature)}
-                    <span className="unit">°C | °F</span>
-                  </h1>
-                </div>
-                <div className="col-6 d-flex justify-content-center">
-                  <img
-                    src={weatherData.icon_url}
-                    alt={weatherData.condition}
-                    className="img-fluid icon"
-                  />
-                </div>
-              </div>
-              <p className="text-capitalize"> {weatherData.condition}..</p>
-            </div>
-            <div className="col-12 my-5">
-              <div className="row text-center">
-                <p className="col-4">
-                  <span className="weather-details">Humidity:</span>{" "}
-                  {weatherData.humidity}%
-                </p>
-                <p className="col-4">
-                  <span className="weather-details">Wind:</span>{" "}
-                  {weatherData.wind} km/h
-                </p>
-                <p className="col-4">
-                  <span className="weather-details">Precipitation:</span>{" "}
-                  {weatherData.precipitation}%
-                </p>
-              </div>
-            </div>
-          </div>
+          <WeatherInfo weatherData={weatherData} />
         </div>
       </div>
     );
   } else {
-    const apiKey = "9387af763ce4b20bcfo1t37b0bacd41e";
-    let apiUrl = `https://api.shecodes.io/weather/v1/current?query=${props.defaultCity}&key=${apiKey}&units=metric`;
-    axios.get(apiUrl).then(handleResponse);
-    console.log(apiUrl);
+    search();
 
     return "Loading...";
   }
