@@ -1,43 +1,71 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import "./Weather.css";
 import WeatherInfo from "./WeatherInfo";
+import WeatherForecast from "./WeatherForecast";
 
 export default function Weather(props) {
   const [weatherData, setWeatherData] = useState({ ready: false });
   const [city, setCity] = useState(props.defaultCity);
-
-  function handleResponse(response) {
-    setWeatherData({
-      ready: true,
-      city: response.data.city,
-      time: response.data.time,
-      date: new Date(response.data.time * 1000).toLocaleDateString("en-UK", {
-        weekday: "long",
-      }),
-      temperature: response.data.temperature.current,
-      condition: response.data.condition.description,
-      icon_url: `https://shecodes-assets.s3.amazonaws.com/api/weather/icons/${response.data.condition.icon}.png`,
-      humidity: response.data.temperature.humidity,
-      icon: response.data.condition.icon,
-      wind: response.data.wind.speed,
-      precipitation: response.data.temperature.precipitation,
-    });
-  }
+  const [error, setError] = useState("");
 
   function handleSubmit(event) {
     event.preventDefault();
-    search();
+    search(city);
   }
 
   function handleCityChange(event) {
     setCity(event.target.value);
   }
 
-  function search() {
+  function search(searchCity) {
     const apiKey = "9387af763ce4b20bcfo1t37b0bacd41e";
-    let apiUrl = `https://api.shecodes.io/weather/v1/current?query=${city}&key=${apiKey}&units=metric`;
-    axios.get(apiUrl).then(handleResponse);
+    const query = `query=${encodeURIComponent(searchCity)}&key=${apiKey}&units=metric`;
+    const currentUrl = `https://api.shecodes.io/weather/v1/current?${query}`;
+    const forecastUrl = `https://api.shecodes.io/weather/v1/forecast?${query}`;
+
+    setWeatherData({ ready: false });
+    setError("");
+    Promise.all([axios.get(currentUrl), axios.get(forecastUrl)])
+      .then(([currentResponse, forecastResponse]) => {
+        const current = currentResponse.data;
+        setWeatherData({
+          ready: true,
+          city: current.city,
+          time: current.time,
+          date: new Date(current.time * 1000).toLocaleDateString("en-GB", {
+            weekday: "long",
+          }),
+          temperature: current.temperature.current,
+          condition: current.condition.description,
+          icon_url: `https://shecodes-assets.s3.amazonaws.com/api/weather/icons/${current.condition.icon}.png`,
+          humidity: current.temperature.humidity,
+          wind: current.wind.speed,
+          precipitation: current.temperature.precipitation,
+          forecast: forecastResponse.data.daily.slice(0, 5).map((day) => ({
+            date: day.time,
+            condition: day.condition.description,
+            icon_url: `https://shecodes-assets.s3.amazonaws.com/api/weather/icons/${day.condition.icon}.png`,
+            high: day.temperature.maximum,
+            low: day.temperature.minimum,
+          })),
+        });
+      })
+      .catch(() => {
+        setError("Could not load weather for that city. Please try again.");
+      });
+  }
+
+  useEffect(() => {
+    search(props.defaultCity);
+  }, [props.defaultCity]);
+
+  if (error) {
+    return <p role="alert">{error}</p>;
+  }
+
+  if (!weatherData.ready) {
+    return <p>Loading...</p>;
   }
 
   if (weatherData.ready) {
@@ -51,7 +79,7 @@ export default function Weather(props) {
                   type="search"
                   placeholder="Enter a city..."
                   className="form-control"
-                  autoFocus="on"
+                  value={city}
                   onChange={handleCityChange}
                 />
               </div>
@@ -65,12 +93,9 @@ export default function Weather(props) {
             </div>
           </form>
           <WeatherInfo weatherData={weatherData} />
+          <WeatherForecast forecast={weatherData.forecast} />
         </div>
       </div>
     );
-  } else {
-    search();
-
-    return "Loading...";
   }
 }
