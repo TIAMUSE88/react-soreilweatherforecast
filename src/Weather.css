@@ -28,6 +28,16 @@ input {
   object-fit: contain;
   transform: translateY(0.5em);
 }
+.WeatherForecast {
+  margin-top: 2rem;
+}
+.WeatherForecast-icon {
+  display: block;
+  width: 4rem;
+  height: 4rem;
+  object-fit: contain;
+  margin: 0.25rem auto;
+}
 .weather-details {
   font-weight: bold;
   color: #e968d3;
