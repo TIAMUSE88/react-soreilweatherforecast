@@ -28,6 +28,14 @@ export default function App() {
           >
             Github.
           </a>
+          Live version hosted on{" "}
+          <a
+            href="https://react-soreilweatherapp.netlify.app/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Netlify
+          </a>
         </footer>
       </div>
     </div>
