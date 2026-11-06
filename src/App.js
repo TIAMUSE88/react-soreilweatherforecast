@@ -27,7 +27,7 @@ export default function App() {
             rel="noopener noreferrer"
           >
             Github.
-          </a>
+          </a>{" "}
           Live version hosted on{" "}
           <a
             href="https://react-soreilweatherapp.netlify.app/"
