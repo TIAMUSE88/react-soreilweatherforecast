@@ -1,4 +1,5 @@
 import WeatherTemperature from "./WeatherTemperature";
+import WeatherIcon from "./WeatherIcon";
 
 export default function WeatherInfo(props) {
   const { weatherData } = props;
@@ -20,10 +21,11 @@ export default function WeatherInfo(props) {
               <WeatherTemperature temperature={weatherData.temperature} />
             </div>
             <div className="col-6 d-flex justify-content-center">
-              <img
+              <WeatherIcon
                 src={weatherData.icon_url}
                 alt={weatherData.condition}
                 className="img-fluid icon"
+                condition={weatherData.condition}
               />
             </div>
           </div>

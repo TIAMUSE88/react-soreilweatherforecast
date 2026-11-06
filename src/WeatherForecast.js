@@ -1,3 +1,5 @@
+import WeatherIcon from "./WeatherIcon";
+
 export default function WeatherForecast({ forecast }) {
   return (
     <div className="WeatherForecast">
@@ -10,10 +12,11 @@ export default function WeatherForecast({ forecast }) {
                   weekday: "short",
                 })}
               </div>
-              <img
+              <WeatherIcon
                 src={day.icon_url}
                 alt={day.condition}
                 className="WeatherForecast-icon"
+                condition={day.condition}
               />
               <div className="WeatherForecast-temp">
                 <strong>{Math.round(day.high)}°</strong>
